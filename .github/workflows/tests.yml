@@ -23,6 +23,11 @@ jobs:
         pip install pytest pytest-asyncio httpx
 
     - name: Run Backend Tests
+      env:
+        TESTING: "true"
+        GEMINI_API_KEY: "mock_key"
+        GOOGLE_CLOUD_PROJECT: "mock_project"
       run: |
         cd backend
         pytest
+

@@ -32,8 +32,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 # ─── RATE LIMITING ────────────────────────────────────────────────────────────
-limiter = Limiter(key_func=get_remote_address)
+# Disable rate limiting during tests to prevent CI failures
+is_testing = os.getenv("TESTING", "false").lower() == "true"
+limiter = Limiter(key_func=get_remote_address, enabled=not is_testing)
 app = FastAPI(
+
     title="VoteWise AI Backend",
     description="High-performance Civic-Tech AI API built for the Google Solution Challenge.",
     version="1.2.0"
