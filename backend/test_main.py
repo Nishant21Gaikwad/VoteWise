@@ -1,15 +1,15 @@
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-import json
+from unittest.mock import patch, MagicMock
 
 client = TestClient(app)
 
 def test_health_check():
     """Verify that the API server is up and running."""
-    response = client.get("/")
+    response = client.get("/health")
     assert response.status_code == 200
-    assert "VoteWise AI Backend" in response.json()["name"]
+    assert response.json()["status"] == "healthy"
 
 def test_chat_validation():
     """Ensure that the API correctly validates inputs."""
@@ -17,19 +17,10 @@ def test_chat_validation():
     response = client.post("/api/chat", json={})
     assert response.status_code == 422
     
-    # Test extremely long message (Security/Efficiency check)
+    # Test extremely long message (Security check)
     long_msg = "A" * 2001
     response = client.post("/api/chat", json={"message": long_msg})
     assert response.status_code == 422
-
-def test_rate_limiting():
-    """Verify that the rate limiter is active (Security Parameter)."""
-    # We trigger multiple requests quickly to see if the 429 occurs
-    # Note: In some test environments, we might need to mock the limiter
-    responses = [client.post("/api/chat", json={"message": "Hi"}) for _ in range(15)]
-    has_rate_limited = any(r.status_code == 429 for r in responses)
-    # This test is a placeholder as rate limiting depends on the IP which might be static in tests
-    assert True 
 
 def test_cors_headers():
     """Check for secure CORS configuration."""
@@ -41,15 +32,27 @@ def test_cors_headers():
     assert response.status_code == 200
     assert "Access-Control-Allow-Origin" in response.headers
 
-def test_language_support():
-    """Verify that the API handles different language codes."""
-    for lang in ["en", "hi", "mr"]:
-        response = client.post("/api/chat", json={"message": "Hello", "lang": lang})
-        # Even if AI fails, the validation should pass
-        assert response.status_code in [200, 500] 
+@patch("httpx.AsyncClient.post")
+def test_chat_ai_mock(mock_post):
+    """
+    Simulate an AI response to verify the end-to-end flow 
+    without needing a real API Key (Perfect for CI/CD).
+    """
+    # Mock a successful Gemini API response
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "candidates": [{"content": {"parts": [{"text": "Mocked AI Response"}]}}]
+    }
+    mock_post.return_value = mock_response
 
-@pytest.mark.asyncio
-async def test_ai_model_discovery():
-    """Internal logic check for model discovery resilience."""
-    from main import GEMINI_API_KEY
-    assert GEMINI_API_KEY is not None or "Missing API Key" 
+    response = client.post("/api/chat", json={"message": "Hello", "lang": "en"})
+    assert response.status_code == 200
+    assert "response" in response.json()
+    assert response.json()["response"] == "Mocked AI Response"
+
+def test_security_headers():
+    """Ensure that the security middleware is injecting protection headers."""
+    response = client.get("/health")
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["X-Frame-Options"] == "DENY"
