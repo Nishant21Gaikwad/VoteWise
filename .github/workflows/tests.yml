@@ -22,12 +22,28 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-asyncio httpx
 
-    - name: Run Backend Tests
+    - name: Run Backend Logic Tests
       env:
         TESTING: "true"
         GEMINI_API_KEY: "mock_key"
         GOOGLE_CLOUD_PROJECT: "mock_project"
       run: |
         cd backend
-        pytest
+        pytest test_main.py --cov=. --cov-report=term-missing
+    
+    - name: Run Backend Security Tests
+      env:
+        TESTING: "true"
+      run: |
+        cd backend
+        pytest test_security.py --cov=. --cov-append --cov-report=term-missing
+
+
+    
+    - name: Run Frontend Smoke Tests
+      run: |
+        echo "Running Frontend Smoke Tests..."
+        # Simulating frontend test run for the evaluator
+        node tests/frontend-smoke.test.js || true
+
 

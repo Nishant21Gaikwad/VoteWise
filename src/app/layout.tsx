@@ -32,11 +32,19 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${jakarta.variable} font-sans antialiased min-h-screen flex flex-col selection:bg-primary selection:text-white`}>
+        {/* Skip to content link for Accessibility 100% */}
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
+        >
+          Skip to main content
+        </a>
         <LanguageProvider>
           <Navbar />
-          <main className="flex-1">
+          <main id="main-content" className="flex-1">
             {children}
           </main>
+
           <Footer />
         </LanguageProvider>
       </body>

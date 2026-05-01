@@ -4,7 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, Mic, Sparkles, Volume2, VolumeX, History, Info, SquareMenu } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { sendChatMessage } from '@/lib/api';
 
+
+/**
+ * AssistantPage - The core AI chat interface for VoteWise.
+ * Features: Multilingual support, Text-to-Speech, and ECI-validated responses.
+ * @returns {JSX.Element} The rendered AI Assistant page.
+ */
 export default function AssistantPage() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Welcome to your personal Election Guide. I can help you understand eligibility, registration, and exactly what happens on polling day. Where would you like to start?' }
@@ -14,6 +21,9 @@ export default function AssistantPage() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * Smoothly scrolls the chat container to the latest message.
+   */
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTo({
@@ -22,6 +32,7 @@ export default function AssistantPage() {
       });
     }
   };
+
 
   useEffect(() => {
     scrollToBottom();
@@ -57,24 +68,16 @@ export default function AssistantPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('https://votewise-backend-330193765057.asia-south1.run.app/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg, language: lang })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.detail || 'Failed to get response');
-      }
-      
+      const data = await sendChatMessage({ message: userMsg, language: lang });
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', content: error.message || "I'm having trouble connecting to my knowledge base right now. Please ensure the API Key is valid." }]);
+      const msg = error instanceof Error ? error.message : "Connection failed";
+      setMessages(prev => [...prev, { role: 'assistant', content: msg }]);
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const suggestions = [

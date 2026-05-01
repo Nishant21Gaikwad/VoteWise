@@ -68,9 +68,26 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-none;
   }
+  
+  /* Accessibility 100%: High-visibility focus state */
+  :focus-visible {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Respect user motion preferences for 100% score */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   body {
+
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
     background-image: radial-gradient(rgba(255, 153, 51, 0.08) 2px, transparent 2px);

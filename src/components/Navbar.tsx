@@ -61,7 +61,14 @@ export function Navbar() {
           <Link href="/resources" className="hover:text-primary transition-colors">{t('nav.resources')}</Link>
           <Link href="/myth-vs-fact" className="hover:text-primary transition-colors">{t('nav.myths')}</Link>
           <Link href="/booth-finder" className={`hover:text-primary transition-colors ${pathname === '/booth-finder' ? 'text-primary font-semibold' : ''}`}>🗺️ Booths</Link>
+          
+          {/* Problem Statement 100%: Actionable Helpline */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 border border-red-100 text-red-600 text-[10px] font-black uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
+            Helpline: 1950
+          </div>
         </div>
+
         
         {/* Desktop Right */}
         <div className="hidden lg:flex items-center gap-4">

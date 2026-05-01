@@ -39,15 +39,19 @@ export default function BoothFinderPage() {
 
         <form onSubmit={handleSearch} className="space-y-4">
           <div className="relative">
+            <label htmlFor="booth-search" className="sr-only">Enter Pincode or City</label>
             <input 
+              id="booth-search"
               type="text" 
               placeholder="Enter Pincode or City (e.g. 400001, Mumbai)"
               value={zip}
               onChange={(e) => setZip(e.target.value)}
               className="w-full bg-card border border-border rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-primary/50 outline-none transition-all shadow-sm"
+              aria-label="Search Polling Booths"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" aria-hidden="true" />
           </div>
+
           <button 
             type="submit"
             disabled={searching}

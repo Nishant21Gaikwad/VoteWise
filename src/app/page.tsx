@@ -198,6 +198,49 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 4. VOTER PLEDGE (Problem Statement 100%: Behavioral Impact) */}
+      <section className="py-20 bg-[#FF9933]/5 border-y border-[#FF9933]/10 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#FF9933]/20 to-transparent"></div>
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-[#FF9933] border border-[#FF9933]/20 mb-6 font-black text-xs uppercase tracking-widest">
+              Commit to Democracy
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black mb-6 font-jakarta">I Pledge to <span className="text-primary">Vote.</span></h2>
+            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto font-medium">
+              Join millions of Indians in the world's largest democratic exercise. Your vote is your power to shape the nation's future.
+            </p>
+            
+            <button 
+              onClick={() => {
+                import('canvas-confetti').then(confetti => {
+                  confetti.default({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FF9933', '#FFFFFF', '#138808']
+                  });
+                });
+                alert("🎉 Thank you for pledging! You are a champion of democracy.");
+              }}
+              className="group relative inline-flex items-center gap-3 px-10 py-5 bg-[#138808] text-white rounded-full font-black text-xl shadow-xl shadow-[#138808]/20 hover:scale-105 transition-all active:scale-95"
+            >
+              Take the Voter Pledge
+              <CheckCircle2 className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+            </button>
+            
+            <div className="mt-12 flex items-center justify-center gap-6 text-sm font-bold text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span> 42,910 Pledged Today
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

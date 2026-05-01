@@ -31,14 +31,22 @@ def test_mock_chat(mock_post):
     mock_res = MagicMock()
     mock_res.status_code = 200
     mock_res.json.return_value = {
-        "candidates": [{"content": {"parts": [{"text": "ECI is the Election Commission."}]}}]
+        "candidates": [{"content": {"parts": [{"text": "ECI info."}]}}]
     }
     mock_post.return_value = mock_res
 
-    res = client.post("/api/chat", json={"message": "What is ECI?", "language": "EN"})
-    assert res.status_code == 200
-    assert "response" in res.json()
-    assert "ECI" in res.json()["response"]
+    # First call - hits the AI
+    res1 = client.post("/api/chat", json={"message": "Who is ECI?", "language": "EN"})
+    assert res1.status_code == 200
+    
+    # Second call (same query) - should hit the Cache (Efficiency 100%)
+    res2 = client.post("/api/chat", json={"message": "Who is ECI?", "language": "EN"})
+    assert res2.status_code == 200
+    assert res1.json()["response"] == res2.json()["response"]
+    
+    # Assert AI was only called ONCE due to caching
+    assert mock_post.call_count == 1
+
 
 def test_security_headers():
     """Verify security middleware."""
