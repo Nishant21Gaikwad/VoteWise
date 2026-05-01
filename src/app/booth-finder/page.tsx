@@ -37,23 +37,26 @@ export default function BoothFinderPage() {
           <p className="text-muted-foreground">Find your designated polling station and check live wait times.</p>
         </div>
 
-        <form onSubmit={handleSearch} className="relative">
-          <input 
-            type="text" 
-            placeholder="Enter Pincode or City (e.g. 400001, Mumbai)"
-            value={zip}
-            onChange={(e) => setZip(e.target.value)}
-            className="w-full bg-card border border-border rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-primary/50 outline-none transition-all shadow-sm"
-          />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+        <form onSubmit={handleSearch} className="space-y-4">
+          <div className="relative">
+            <input 
+              type="text" 
+              placeholder="Enter Pincode or City (e.g. 400001, Mumbai)"
+              value={zip}
+              onChange={(e) => setZip(e.target.value)}
+              className="w-full bg-card border border-border rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-primary/50 outline-none transition-all shadow-sm"
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+          </div>
           <button 
             type="submit"
             disabled={searching}
-            className="mt-4 w-full bg-primary text-white rounded-xl py-3 font-medium hover:bg-primary/90 transition-colors disabled:opacity-70"
+            className="w-full bg-primary text-white rounded-xl py-4 font-bold shadow-md hover:shadow-primary/20 hover:bg-primary/90 transition-all active:scale-[0.98] disabled:opacity-70"
           >
             {searching ? 'Locating...' : 'Search Booths'}
           </button>
         </form>
+
 
         {!results && !searching && (
           <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl flex gap-3 text-sm text-muted-foreground mt-4">
@@ -106,7 +109,8 @@ export default function BoothFinderPage() {
           style={{ border: 0, minHeight: '500px' }} 
           loading="lazy" 
           allowFullScreen 
-          src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(searchedLocation + ', India')}&zoom=12`}
+          src={`https://www.google.com/maps/embed/v1/place?key=REDACTED_MAPS_KEY&q=${encodeURIComponent(searchedLocation + ', India')}&zoom=12`}
+
           className="transition-opacity duration-500"
         ></iframe>
       </div>
