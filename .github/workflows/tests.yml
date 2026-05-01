@@ -20,7 +20,8 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-asyncio httpx
+        pip install pytest pytest-asyncio httpx pytest-cov
+
 
     - name: Run Backend Logic Tests
       env:
@@ -42,8 +43,7 @@ jobs:
     
     - name: Run Frontend Smoke Tests
       run: |
-        echo "Running Frontend Smoke Tests..."
-        # Simulating frontend test run for the evaluator
-        node tests/frontend-smoke.test.js || true
+        node tests/frontend-smoke.test.js
+
 
 
