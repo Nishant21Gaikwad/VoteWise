@@ -159,6 +159,7 @@ export default function AssistantPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-4"
+              aria-busy="true"
             >
               <div className="w-10 h-10 rounded-full bg-card border border-border text-primary flex items-center justify-center shrink-0">
                 <Bot className="w-5 h-5" />
