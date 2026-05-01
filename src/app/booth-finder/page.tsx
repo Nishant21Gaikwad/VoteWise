@@ -109,7 +109,8 @@ export default function BoothFinderPage() {
           style={{ border: 0, minHeight: '500px' }} 
           loading="lazy" 
           allowFullScreen 
-          src={`https://www.google.com/maps/embed/v1/place?key=REDACTED_MAPS_KEY&q=${encodeURIComponent(searchedLocation + ', India')}&zoom=12`}
+          src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(searchedLocation + ', India')}&zoom=12`}
+
 
           className="transition-opacity duration-500"
         ></iframe>
