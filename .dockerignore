@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+!.env.production
+backend/venv
+backend/__pycache__
+*.log
+.DS_Store
