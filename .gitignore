@@ -15,5 +15,7 @@ backend/.env
 .env.production
 .DS_Store
 
-# Google Cloud
-.gcloud/
+# Testing
+coverage/
+.vitest-result/
+

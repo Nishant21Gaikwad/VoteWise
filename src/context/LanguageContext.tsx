@@ -1,13 +1,36 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
-type Language = 'EN' | 'HI' | 'MR';
+/**
+ * Supported languages for the VoteWise platform.
+ */
+export type Language = 'EN' | 'HI' | 'MR';
+
+/**
+ * Union of all valid translation keys to ensure type safety across the app.
+ */
+export type TranslationKey = 
+  | 'nav.journey' | 'nav.timeline' | 'nav.assistant' | 'nav.resources' | 'nav.myths'
+  | 'hero.badge' | 'hero.title1' | 'hero.title2' | 'hero.desc' | 'hero.btn.evm' | 'hero.btn.ai'
+  | 'widget.title' | 'widget.subtitle' | 'widget.age' | 'widget.age.desc' | 'widget.epic' 
+  | 'widget.epic.desc' | 'widget.search.label' | 'widget.search.placeholder'
+  | 'stats.voters' | 'stats.booths' | 'stats.constituencies' | 'stats.officials'
+  | 'bento.title' | 'bento.subtitle' | 'bento.ai.title' | 'bento.ai.desc' 
+  | 'bento.ai.chat1' | 'bento.ai.chat2' | 'bento.evm.title' | 'bento.evm.desc'
+  | 'bento.journey.title' | 'bento.journey.desc' | 'bento.resources.tag' 
+  | 'bento.resources.title' | 'bento.resources.desc'
+  | 'cinematic.title1' | 'cinematic.title2' | 'cinematic.title3' | 'cinematic.scroll'
+  | 'cinematic.booth' | 'cinematic.booth.desc';
 
 interface LanguageContextType {
   lang: Language;
   setLang: (lang: Language) => void;
-  t: (key: string) => string;
+  /**
+   * Translate a key into the current language.
+   * @param key - One of the predefined translation keys.
+   */
+  t: (key: TranslationKey) => string;
 }
 
 const translations: Record<Language, Record<string, string>> = {
@@ -150,12 +173,18 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Language>('EN');
 
-  const t = (key: string) => {
+  const t = useCallback((key: TranslationKey) => {
     return translations[lang][key] || key;
-  };
+  }, [lang]);
+
+  const value = useMemo(() => ({
+    lang,
+    setLang,
+    t
+  }), [lang, t]);
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );
@@ -168,3 +197,4 @@ export function useLanguage() {
   }
   return context;
 }
+
